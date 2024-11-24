@@ -2,8 +2,7 @@
 /.vs
 
 # Build files
-/VectorRenderer
-/x64
+/build
 
 # C++ objects and libs
 *.slo
