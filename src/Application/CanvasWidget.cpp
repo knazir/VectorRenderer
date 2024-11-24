@@ -1,6 +1,7 @@
 #include "CanvasWidget.h"
 
-#include "RendererFactory.h"
+// Renderer
+#include "Renderer/RendererFactory.h"
 
 //------------------------------------------------------------------------------
 CanvasWidget::CanvasWidget(GraphicsBackend backend, QWidget* parent)

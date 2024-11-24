@@ -1,8 +1,11 @@
 #include "MainWindow.h"
 
 #include "CanvasWidget.h"
-#include "IRenderer.h"
 
+// Renderer
+#include "Renderer/IRenderer.h"
+
+// External
 #include <QIcon>
 
 //------------------------------------------------------------------------------

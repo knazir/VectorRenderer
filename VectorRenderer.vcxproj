@@ -71,11 +71,17 @@
     <Link>
       <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Link>
       <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ClCompile>
@@ -106,21 +112,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CanvasWidget.cpp" />
-    <QtRcc Include="VectorRenderer.qrc" />
-    <QtUic Include="MainWindow.ui" />
-    <QtMoc Include="MainWindow.h" />
-    <ClCompile Include="DirectXRenderer.cpp" />
-    <ClCompile Include="MainWindow.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\Application\CanvasWidget.cpp" />
+    <QtRcc Include="resources\VectorRenderer.qrc" />
+    <QtUic Include="ui\MainWindow.ui" />
+    <QtMoc Include="src\Application\MainWindow.h" />
+    <ClCompile Include="src\Renderer\DirectXRenderer.cpp" />
+    <ClCompile Include="src\Application\MainWindow.cpp" />
+    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="CanvasWidget.h" />
+    <QtMoc Include="src\Application\CanvasWidget.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DirectXRenderer.h" />
-    <ClInclude Include="IRenderer.h" />
-    <ClInclude Include="RendererFactory.h" />
+    <ClInclude Include="src\Renderer\DirectXRenderer.h" />
+    <ClInclude Include="src\Renderer\IRenderer.h" />
+    <ClInclude Include="src\Renderer\RendererFactory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

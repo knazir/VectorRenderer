@@ -1,7 +1,9 @@
 #pragma once
 
+// UI
 #include "ui_MainWindow.h"
 
+// External
 #include <QtWidgets/QMainWindow>
 
 //------------------------------------------------------------------------------

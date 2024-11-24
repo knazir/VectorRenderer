@@ -1,7 +1,9 @@
 #pragma once
 
-#include "RendererFactory.h"
+// Renderer
+#include "Renderer/RendererFactory.h"
 
+// External
 #include <QWidget>
 
 //------------------------------------------------------------------------------

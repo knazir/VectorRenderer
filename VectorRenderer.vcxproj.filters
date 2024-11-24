@@ -19,43 +19,43 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <QtRcc Include="VectorRenderer.qrc">
+    <QtRcc Include="resources\VectorRenderer.qrc">
       <Filter>Resources</Filter>
     </QtRcc>
-    <QtUic Include="MainWindow.ui">
+    <QtUic Include="ui\MainWindow.ui">
       <Filter>UI</Filter>
     </QtUic>
-    <ClCompile Include="MainWindow.cpp">
+    <ClCompile Include="src\Application\MainWindow.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="CanvasWidget.cpp">
+    <ClCompile Include="src\Application\CanvasWidget.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="DirectXRenderer.cpp">
+    <ClCompile Include="src\Renderer\DirectXRenderer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="MainWindow.h">
+    <QtMoc Include="src\Application\MainWindow.h">
       <Filter>Source</Filter>
     </QtMoc>
-    <QtMoc Include="CanvasWidget.h">
+    <QtMoc Include="src\Application\CanvasWidget.h">
       <Filter>Source</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="IRenderer.h">
+    <ClInclude Include="src\Renderer\IRenderer.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="DirectXRenderer.h">
+    <ClInclude Include="src\Renderer\DirectXRenderer.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="RendererFactory.h">
+    <ClInclude Include="src\Renderer\RendererFactory.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>

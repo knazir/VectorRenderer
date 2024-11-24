@@ -49,7 +49,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="VectorRenderer.qrc"/>
+  <include location="../resources/VectorRenderer.qrc"/>
  </resources>
  <connections/>
 </ui>

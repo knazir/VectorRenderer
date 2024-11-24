@@ -1,5 +1,7 @@
-#include "MainWindow.h"
+// Application
+#include "Application/MainWindow.h"
 
+// External
 #include <QtWidgets/QApplication>
 
 //------------------------------------------------------------------------------
