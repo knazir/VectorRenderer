@@ -50,12 +50,12 @@ Line::Line(float x1, float y1, float x2, float y2)
 	const float py = dx * halfWidth;
 
 	// Four corners of the quad
-	const float vertices[] =
+	const Vertex vertices[] =
 	{
-		mX1 + px, mY1 + py, mStrokeR, mStrokeG, mStrokeB, mStrokeA,
-		mX1 - px, mY1 - py, mStrokeR, mStrokeG, mStrokeB, mStrokeA,
-		mX2 + px, mY2 + py, mStrokeR, mStrokeG, mStrokeB, mStrokeA,
-		mX2 - px, mY2 - py, mStrokeR, mStrokeG, mStrokeB, mStrokeA
+		Vertex(mX1 + px, mY1 + py, 0.0f, mStrokeR, mStrokeG, mStrokeB, mStrokeA),
+		Vertex(mX1 - px, mY1 - py, 0.0f, mStrokeR, mStrokeG, mStrokeB, mStrokeA),
+		Vertex(mX2 + px, mY2 + py, 0.0f, mStrokeR, mStrokeG, mStrokeB, mStrokeA),
+		Vertex(mX2 - px, mY2 - py, 0.0f, mStrokeR, mStrokeG, mStrokeB, mStrokeA)
 	};
 	data.SetVertices(vertices, sizeof(vertices));
 
@@ -84,12 +84,12 @@ Rect::Rect(float x, float y, float width, float height)
 	const float y2 = mY + mHeight;
 
 	// Four corners of the rectangle
-	const float vertices[] =
+	const Vertex vertices[] =
 	{
-		mX, mY, mFillR, mFillG, mFillB, mFillA,
-		x2, mY, mFillR, mFillG, mFillB, mFillA,
-		x2, y2, mFillR, mFillG, mFillB, mFillA,
-		mX, y2, mFillR, mFillG, mFillB, mFillA
+		Vertex(mX, mY, 0.0f, mFillR, mFillG, mFillB, mFillA),
+		Vertex(x2, mY, 0.0f, mFillR, mFillG, mFillB, mFillA),
+		Vertex(x2, y2, 0.0f, mFillR, mFillG, mFillB, mFillA),
+		Vertex(mX, y2, 0.0f, mFillR, mFillG, mFillB, mFillA)
 	};
 	data.SetVertices(vertices, sizeof(vertices));
 
@@ -119,7 +119,7 @@ BezierCurve::BezierCurve(float x1, float y1, float x2, float y2, float cx1, floa
 	TessellationData data;
 
 	static const int kSegments = 20;	// TODO: Allow this to be set for quality/performance tradeoff
-	float vertices[kSegments * 6];		// Position + Fill color
+	Vertex vertices[kSegments];			// Position + Fill color
 	uint16_t indices[kSegments * 2];	// Two triangles per segment
 	
 	int32_t vertexIndex = 0;
@@ -133,13 +133,9 @@ BezierCurve::BezierCurve(float x1, float y1, float x2, float y2, float cx1, floa
 		ComputeXY(t, x, y);
 
 		// Store vertex
-		vertices[vertexIndex++] = x;
-		vertices[vertexIndex++] = y;
-		vertices[vertexIndex++] = mStrokeR;
-		vertices[vertexIndex++] = mStrokeG;
-		vertices[vertexIndex++] = mStrokeB;
-		vertices[vertexIndex++] = mStrokeA;
+		vertices[vertexIndex++] = Vertex(x, y, 0.0f, mStrokeR, mStrokeG, mStrokeB, mStrokeA);
 
+		// Store indices
 		if (i > 0)
 		{
 			indices[indexIndex++] = i - 1;

@@ -9,10 +9,10 @@
 //------------------------------------------------------------------------------
 struct TessellationData
 {
-	std::vector<float> vertices;	// Position, color, etc.
+	std::vector<Vertex> vertices;	// Position, color
 	std::vector<uint16_t> indices;	// Triangle indices
 
-	void SetVertices(const float* data, size_t size)
+	void SetVertices(const Vertex* data, size_t size)
 	{
 		vertices.assign(data, data + size);
 	}

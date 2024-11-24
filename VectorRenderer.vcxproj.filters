@@ -66,5 +66,11 @@
     </ClInclude>
     <ClInclude Include="src\Vector\VectorShape.h" />
     <ClInclude Include="src\Renderer\VectorRenderer.h" />
+    <ClInclude Include="src\Utils\Assert.h" />
+    <ClInclude Include="src\Utils\Config.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shaders\VertexShader.hlsl" />
+    <FxCompile Include="shaders\PixelShader.hlsl" />
   </ItemGroup>
 </Project>

@@ -8,6 +8,10 @@
 // System
 #include <windows.h>
 
+// Utils
+#include <Utils/Assert.h>
+#include <Utils/Config.h>
+
 // Pointer to RenderDoc API
 //------------------------------------------------------------------------------
 RENDERDOC_API_1_6_0* gRenderDocAPI = nullptr;
@@ -34,7 +38,9 @@ void InitializeRenderDoc()
 //------------------------------------------------------------------------------
 int main(int argc, char* argv[])
 {
+#ifdef RENDER_DOC
     InitializeRenderDoc();
+#endif
 
     QApplication app(argc, argv);
 

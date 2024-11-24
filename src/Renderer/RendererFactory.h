@@ -3,8 +3,8 @@
 #include "IRenderDevice.h"
 #include "DirectXRenderDevice.h"
 
-// External
-#include <QDebug>
+// Utils
+#include <Utils/Assert.h>
 
 //------------------------------------------------------------------------------
 class RendererFactory
@@ -20,7 +20,7 @@ public:
 		}
 		default:
 		{
-			qWarning() << "Unsupported renderer type";
+			ASSERT(false, "Unsupported graphics backend");
 			return nullptr;
 		}
 		}

@@ -37,7 +37,7 @@ void VectorRenderer::Render()
 	{
 		const TessellationData data = shape->Tessellate(mRenderDevice);
 
-		mRenderDevice->CreateVertexBuffer(data.vertices.data(), data.vertices.size() * sizeof(float));
+		mRenderDevice->CreateVertexBuffer(data.vertices.data(), data.vertices.size() * sizeof(Vertex));
 		mRenderDevice->CreateIndexBuffer(data.indices.data(), data.indices.size() * sizeof(uint16_t));
 		mRenderDevice->SetVertexBuffer();
 		mRenderDevice->SetIndexBuffer();

@@ -4,6 +4,9 @@
 #include <Renderer/RendererFactory.h>
 #include <Renderer/VectorRenderer.h>
 
+// Utils
+#include <Utils/Assert.h>
+
 // External
 #include <QTimer>
 
@@ -18,22 +21,20 @@ CanvasWidget::CanvasWidget(GraphicsBackend backend, QWidget* parent)
 
 	// Initialize render device
 	mRenderDevice = RendererFactory::Create(backend);
-	if (mRenderDevice == nullptr)
-	{
-		exit(EXIT_FAILURE);
-	}
 	const bool initialized = mRenderDevice->Initialize(reinterpret_cast<void*>(winId()), width(), height());
-	if (!initialized)
-	{
-		exit(EXIT_FAILURE);
-	}
+
+	const bool vertexShaderLoaded = mRenderDevice->LoadVertexShader(kShadersDir + L"VertexShader.hlsl", "main");
+	ASSERT(vertexShaderLoaded, "Failed to load vertex shader");
+
+	const bool pixelShaderLoaded = mRenderDevice->LoadPixelShader(kShadersDir + L"PixelShader.hlsl", "main");
+	ASSERT(pixelShaderLoaded, "Failed to load pixel shader");
 
 	// Initialize vector renderer
 	mVectorRenderer = new VectorRenderer(mRenderDevice);
 
 	// Start update loop
 	connect(mTimer, &QTimer::timeout, this, &CanvasWidget::Update);
-	mTimer->start(16); // 60 FPS (TODO: Make configurable)
+	mTimer->start(1000.0f / 60.0f); // ~60 FPS (TODO: Make configurable)
 }
 
 //------------------------------------------------------------------------------

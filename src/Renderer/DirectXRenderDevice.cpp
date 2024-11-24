@@ -1,7 +1,11 @@
 #include "DirectXRenderDevice.h"
 
+// Utils
+#include <Utils/Assert.h>
+
 // External
 #include <QDebug>
+#include <d3dcompiler.h>
 
 //------------------------------------------------------------------------------
 DirectXRenderDevice::DirectXRenderDevice()
@@ -34,7 +38,11 @@ DirectXRenderDevice::~DirectXRenderDevice()
 		nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,
 		nullptr,
-		D3D11_CREATE_DEVICE_DEBUG, // TODO: Configure debug IFDEFs
+#ifdef DEBUG
+		D3D11_CREATE_DEVICE_DEBUG,
+#else
+		0,
+#endif
 		nullptr,
 		0,
 		D3D11_SDK_VERSION,
@@ -47,7 +55,7 @@ DirectXRenderDevice::~DirectXRenderDevice()
 
 	if (FAILED(hr))
 	{
-		qWarning() << "Failed to create device and swap chain";
+		ASSERT(false, "Failed to create device and swap chain");
 		return false;
 	}
 
@@ -56,7 +64,7 @@ DirectXRenderDevice::~DirectXRenderDevice()
 	hr = mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
 	if (FAILED(hr))
 	{
-		qWarning() << "Failed to get back buffer";
+		ASSERT(false, "Failed to get back buffer");
 		return false;
 	}
 	mDevice->CreateRenderTargetView(backBuffer, nullptr, &mRenderTargetView);
@@ -82,7 +90,7 @@ DirectXRenderDevice::~DirectXRenderDevice()
 	const HRESULT hr = mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
 	if (FAILED(hr))
 	{
-		qWarning() << "Failed to get back buffer";
+		ASSERT(false, "Failed to get back buffer");
 		return;
 	}
 	mDevice->CreateRenderTargetView(backBuffer, nullptr, &mRenderTargetView);
@@ -110,6 +118,18 @@ DirectXRenderDevice::~DirectXRenderDevice()
 {
 	CleanupRenderTarget();
 
+	if (mVertexShader != nullptr)
+	{
+		mVertexShader->Release();
+		mVertexShader = nullptr;
+	}
+
+	if (mPixelShader != nullptr)
+	{
+		mPixelShader->Release();
+		mPixelShader = nullptr;
+	}
+
 	if (mSwapChain != nullptr)
 	{
 		mSwapChain->Release();
@@ -130,22 +150,60 @@ DirectXRenderDevice::~DirectXRenderDevice()
 }
 
 //------------------------------------------------------------------------------
-/*virtual*/ void DirectXRenderDevice::CleanupRenderTarget()
+/*virtual*/ bool DirectXRenderDevice::LoadVertexShader(const std::wstring& filePath, const std::string& entryPoint)
 {
-	if (mRenderTargetView != nullptr)
+	ID3DBlob* vertexShaderBlob = CompileShader(filePath, entryPoint, "vs_5_0");
+	if (vertexShaderBlob == nullptr)
 	{
-		mRenderTargetView->Release();
-		mRenderTargetView = nullptr;
+		ASSERT(false, "Failed to compile vertex shader");
+		return false;
 	}
+
+	HRESULT hr = mDevice->CreateVertexShader(vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), nullptr, &mVertexShader);
+	if (FAILED(hr))
+	{
+		ASSERT(false, "Failed to create vertex shader");
+		return false;
+	}
+
+	mDeviceContext->VSSetShader(mVertexShader, nullptr, 0);
+	vertexShaderBlob->Release();
+
+	return true;
 }
 
 //------------------------------------------------------------------------------
-/*virtual*/ void DirectXRenderDevice::CreateVertexBuffer(const float* vertices, size_t size)
+/*virtual*/ bool DirectXRenderDevice::LoadPixelShader(const std::wstring& filePath, const std::string& entryPoint)
+{
+	ID3DBlob* pixelShaderBlob = CompileShader(filePath, entryPoint, "ps_5_0");
+	if (pixelShaderBlob == nullptr)
+	{
+		ASSERT(false, "Failed to compile pixel shader");
+		return false;
+	}
+
+	HRESULT hr = mDevice->CreatePixelShader(pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize(), nullptr, &mPixelShader);
+	if (FAILED(hr))
+	{
+		ASSERT(false, "Failed to create pixel shader");
+		return false;
+	}
+
+	mDeviceContext->PSSetShader(mPixelShader, nullptr, 0);
+	pixelShaderBlob->Release();
+
+	return true;
+}
+
+//------------------------------------------------------------------------------
+/*virtual*/ void DirectXRenderDevice::CreateVertexBuffer(const Vertex* vertices, size_t size)
 {
 	D3D11_BUFFER_DESC bufferDesc = {};
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = static_cast<UINT>(size);
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.CPUAccessFlags = 0u;
+	bufferDesc.MiscFlags = 0u;
+	bufferDesc.ByteWidth = static_cast<UINT>(size);
 
 	D3D11_SUBRESOURCE_DATA initData = {};
 	initData.pSysMem = vertices;
@@ -153,7 +211,7 @@ DirectXRenderDevice::~DirectXRenderDevice()
 	HRESULT hr = mDevice->CreateBuffer(&bufferDesc, &initData, &mVertexBuffer);
 	if (FAILED(hr))
 	{
-		qWarning() << "Failed to create vertex buffer";
+		ASSERT(false, "Failed to create vertex buffer");
 	}
 }
 
@@ -161,9 +219,11 @@ DirectXRenderDevice::~DirectXRenderDevice()
 /*virtual*/ void DirectXRenderDevice::CreateIndexBuffer(const uint16_t* indices, size_t size)
 {
 	D3D11_BUFFER_DESC bufferDesc = {};
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = static_cast<UINT>(size);
 	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.CPUAccessFlags = 0u;
+	bufferDesc.MiscFlags = 0u;
+	bufferDesc.ByteWidth = static_cast<UINT>(size);
 
 	D3D11_SUBRESOURCE_DATA initData = {};
 	initData.pSysMem = indices;
@@ -171,16 +231,16 @@ DirectXRenderDevice::~DirectXRenderDevice()
 	HRESULT hr = mDevice->CreateBuffer(&bufferDesc, &initData, &mIndexBuffer);
 	if (FAILED(hr))
 	{
-		qWarning() << "Failed to create index buffer";
+		ASSERT(false, "Failed to create index buffer");
 	}
 }
 
 //------------------------------------------------------------------------------
 /*virtual*/ void DirectXRenderDevice::SetVertexBuffer()
 {
-	UINT stride = sizeof(float) * 6;
+	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
-	mDeviceContext->IASetVertexBuffers(0, 1, &mVertexBuffer, &stride, &offset);
+	mDeviceContext->IASetVertexBuffers(0u, 1u, &mVertexBuffer, &stride, &offset);
 }
 
 //------------------------------------------------------------------------------
@@ -194,4 +254,45 @@ DirectXRenderDevice::~DirectXRenderDevice()
 {
 	mDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	mDeviceContext->DrawIndexed(static_cast<UINT>(indexCount), 0, 0);
+}
+
+//------------------------------------------------------------------------------
+/*virtual*/ void DirectXRenderDevice::CleanupRenderTarget()
+{
+	if (mRenderTargetView != nullptr)
+	{
+		mRenderTargetView->Release();
+		mRenderTargetView = nullptr;
+	}
+}
+
+//------------------------------------------------------------------------------
+/*virtual*/ ID3DBlob* DirectXRenderDevice::CompileShader(const std::wstring& filePath, const std::string& entryPoint, const std::string& target)
+{
+	ID3DBlob* shaderBlob = nullptr;
+	ID3DBlob* errorBlob = nullptr;
+
+	HRESULT hr = D3DCompileFromFile(
+		filePath.c_str(),				// File path to HLSL shader
+		nullptr,						// Optional macros
+		nullptr,						// Include handler (nullptr for default)
+		entryPoint.c_str(),				// Shader entry point
+		target.c_str(),					// Shader model (e.g., "vs_5_0" or "ps_5_0")
+		D3DCOMPILE_ENABLE_STRICTNESS,	// Compilation flags
+		0,								// Effect flags
+		&shaderBlob,					// Compiled shader blob
+		&errorBlob						// Error messages
+	);
+
+	if (FAILED(hr))
+	{
+		if (errorBlob != nullptr)
+		{
+			qWarning() << "Shader compilation error: " << static_cast<const char*>(errorBlob->GetBufferPointer());
+		}
+		ASSERT(false, "Failed to compile shader");
+		return nullptr;
+	}
+
+	return shaderBlob;
 }

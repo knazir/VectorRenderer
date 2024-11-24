@@ -5,6 +5,9 @@
 // External
 #include <d3d11.h>
 
+// System
+#include <string>
+
 //------------------------------------------------------------------------------
 class DirectXRenderDevice : public IRenderDevice
 {
@@ -18,7 +21,10 @@ public:
 	virtual void Render() override;
 	virtual void Shutdown() override;
 
-	virtual void CreateVertexBuffer(const float* vertices, size_t size) override;
+	virtual bool LoadVertexShader(const std::wstring& filePath, const std::string& entryPoint) override;
+	virtual bool LoadPixelShader(const std::wstring& filePath, const std::string& entryPoint) override;
+
+	virtual void CreateVertexBuffer(const Vertex* vertices, size_t size) override;
 	virtual void CreateIndexBuffer(const uint16_t* indices, size_t size) override;
 	virtual void SetVertexBuffer() override;
 	virtual void SetIndexBuffer() override;
@@ -26,6 +32,7 @@ public:
 
 private:
 	void CleanupRenderTarget();
+	ID3DBlob* CompileShader(const std::wstring& filePath, const std::string& entryPoint, const std::string& target);
 
 	HWND mHWND = 0;
 	ID3D11Device* mDevice = nullptr;
@@ -33,6 +40,8 @@ private:
 	IDXGISwapChain* mSwapChain = nullptr;
 	ID3D11RenderTargetView* mRenderTargetView = nullptr;
 
+	ID3D11VertexShader* mVertexShader = nullptr;
+	ID3D11PixelShader* mPixelShader = nullptr;
 	ID3D11Buffer* mVertexBuffer = nullptr;
 	ID3D11Buffer* mIndexBuffer = nullptr;
 };
