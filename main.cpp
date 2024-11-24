@@ -1,12 +1,14 @@
-#include "VectorRenderer.h"
+#include "MainWindow.h"
 
 #include <QtWidgets/QApplication>
 
 //------------------------------------------------------------------------------
 int main(int argc, char* argv[])
 {
-    QApplication a(argc, argv);
-    VectorRenderer w;
-    w.show();
-    return a.exec();
+    QApplication app(argc, argv);
+
+    MainWindow window;
+    window.show();
+
+    return app.exec();
 }
