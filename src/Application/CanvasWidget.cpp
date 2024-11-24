@@ -19,17 +19,13 @@ CanvasWidget::CanvasWidget(GraphicsBackend backend, QWidget* parent)
 	setAttribute(Qt::WA_NoSystemBackground);
 	show();
 
-	// Initialize render device
 	mRenderDevice = RendererFactory::Create(backend);
 	const bool initialized = mRenderDevice->Initialize(reinterpret_cast<void*>(winId()), width(), height());
+	ASSERT(initialized, "Failed to initialize render device");
 
-	const bool vertexShaderLoaded = mRenderDevice->LoadVertexShader(kShadersDir + L"VertexShader.hlsl", "main");
-	ASSERT(vertexShaderLoaded, "Failed to load vertex shader");
+	const bool shadersLoaded = mRenderDevice->LoadShaders();
+	ASSERT(shadersLoaded, "Failed to load shaders");
 
-	const bool pixelShaderLoaded = mRenderDevice->LoadPixelShader(kShadersDir + L"PixelShader.hlsl", "main");
-	ASSERT(pixelShaderLoaded, "Failed to load pixel shader");
-
-	// Initialize vector renderer
 	mVectorRenderer = new VectorRenderer(mRenderDevice);
 
 	// Start update loop

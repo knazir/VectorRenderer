@@ -14,12 +14,12 @@ struct TessellationData
 
 	void SetVertices(const Vertex* data, size_t size)
 	{
-		vertices.assign(data, data + size);
+		vertices.assign(data, (const Vertex*)((const char*)data + size));
 	}
 
 	void SetIndices(const uint16_t* data, size_t size)
 	{
-		indices.assign(data, data + size);
+		indices.assign(data, (const uint16_t*)((const char*)data + size));
 	}
 };
 

@@ -2,7 +2,7 @@
 #include "Application/MainWindow.h"
 
 // External
-#include <External/renderdoc_app.h>
+#include <External/RenderDoc/renderdoc_app.h>
 #include <QtWidgets/QApplication>
 
 // System

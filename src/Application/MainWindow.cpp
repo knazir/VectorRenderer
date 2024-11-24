@@ -45,15 +45,21 @@ void MainWindow::CreateTestShapes()
     line->SetStroke(1.0f, 0.0f, 0.0f, 1.0f, 5.0f);
 
     // Create a green rectangle
-    Rect* rect = new Rect(100.0f, 150.0f, 200.0f, 100.0f);
-    rect->SetFill(0.0f, 1.0f, 0.0f, 1.0f);
+    //Rect* rect = new Rect(100.0f, 150.0f, 200.0f, 100.0f);
+    //Rect* rect = new Rect(0.0f, 1.0f, 1.0f, 1.0f);
+    Rect* smallRect = new Rect(-0.5f, -0.5f, 1.0f, 1.0f);
+    smallRect->SetFill(1.0f, 0.0f, 0.0f, 1.0f);
+
+    Rect* bigRect = new Rect(-100.0f, -150.0f, 200.0f, 100.0f);
+    bigRect->SetFill(0.0f, 1.0f, 0.0f, 1.0f);
 
     // Create a blue quadratic Bezier curve
     BezierCurve* curve = new BezierCurve(50.0f, 300.0f, 300.0f, 300.0f, 150.0f, 400.0f, 0.0f, 0.0f);
     curve->SetStroke(0.0f, 0.0f, 1.0f, 1.0f, 2.0f);
 
     // Add shapes to the renderer
-    mCanvas->AddShape(line);
-    mCanvas->AddShape(rect);
-    mCanvas->AddShape(curve);
+    //mCanvas->AddShape(line);
+    mCanvas->AddShape(smallRect);
+    //mCanvas->AddShape(bigRect);
+    //mCanvas->AddShape(curve);
 }

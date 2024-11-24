@@ -56,14 +56,14 @@ public:
 	virtual void Shutdown() = 0;
 
 	// Resources
-	virtual bool LoadVertexShader(const std::wstring& filePath, const std::string& entryPoint) = 0;
-	virtual bool LoadPixelShader(const std::wstring& filePath, const std::string& entryPoint) = 0;
+	virtual bool LoadShaders() = 0;
 
 	// Rendering
 	virtual void CreateVertexBuffer(const Vertex* vertices, size_t size) = 0;
 	virtual void CreateIndexBuffer(const uint16_t* indices, size_t size) = 0;
 	virtual void SetVertexBuffer() = 0;
 	virtual void SetIndexBuffer() = 0;
+	virtual void SetConstantBuffers() = 0;
 	virtual void DrawIndexedTriangles(size_t indexCount) = 0;
 };
 

@@ -86,10 +86,10 @@ Rect::Rect(float x, float y, float width, float height)
 	// Four corners of the rectangle
 	const Vertex vertices[] =
 	{
-		Vertex(mX, mY, 0.0f, mFillR, mFillG, mFillB, mFillA),
-		Vertex(x2, mY, 0.0f, mFillR, mFillG, mFillB, mFillA),
-		Vertex(x2, y2, 0.0f, mFillR, mFillG, mFillB, mFillA),
-		Vertex(mX, y2, 0.0f, mFillR, mFillG, mFillB, mFillA)
+		Vertex(mX, y2, 0.0f, mFillR, mFillG, mFillB, mFillA),	// Bottom-left
+		Vertex(x2, y2, 0.0f, mFillR, mFillG, mFillB, mFillA),	// Bottom-right
+		Vertex(x2, mY, 0.0f, mFillR, mFillG, mFillB, mFillA),	// Top-right
+		Vertex(mX, mY, 0.0f, mFillR, mFillG, mFillB, mFillA),	// Top-left
 	};
 	data.SetVertices(vertices, sizeof(vertices));
 

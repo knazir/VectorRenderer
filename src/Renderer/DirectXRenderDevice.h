@@ -21,17 +21,21 @@ public:
 	virtual void Render() override;
 	virtual void Shutdown() override;
 
-	virtual bool LoadVertexShader(const std::wstring& filePath, const std::string& entryPoint) override;
-	virtual bool LoadPixelShader(const std::wstring& filePath, const std::string& entryPoint) override;
+	virtual bool LoadShaders() override;
 
 	virtual void CreateVertexBuffer(const Vertex* vertices, size_t size) override;
 	virtual void CreateIndexBuffer(const uint16_t* indices, size_t size) override;
 	virtual void SetVertexBuffer() override;
 	virtual void SetIndexBuffer() override;
+	virtual void SetConstantBuffers() override;
 	virtual void DrawIndexedTriangles(size_t indexCount) override;
 
 private:
+	void UpdateViewport(float width, float height);
 	void CleanupRenderTarget();
+	ID3DBlob* LoadVertexShader(const std::wstring& filePath, const std::string& entryPoint);
+	ID3DBlob* LoadPixelShader(const std::wstring& filePath, const std::string& entryPoint);
+	void SetInputLayout(ID3DBlob* vertexShaderBlob);
 	ID3DBlob* CompileShader(const std::wstring& filePath, const std::string& entryPoint, const std::string& target);
 
 	HWND mHWND = 0;
@@ -40,9 +44,13 @@ private:
 	IDXGISwapChain* mSwapChain = nullptr;
 	ID3D11RenderTargetView* mRenderTargetView = nullptr;
 
+	ID3D11InputLayout* mInputLayout = nullptr;
 	ID3D11VertexShader* mVertexShader = nullptr;
 	ID3D11PixelShader* mPixelShader = nullptr;
 	ID3D11Buffer* mVertexBuffer = nullptr;
 	ID3D11Buffer* mIndexBuffer = nullptr;
+
+	float mWidth = 0.0f;
+	float mHeight = 0.0f;
 };
 

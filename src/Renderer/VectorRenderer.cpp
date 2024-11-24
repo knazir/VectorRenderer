@@ -41,6 +41,7 @@ void VectorRenderer::Render()
 		mRenderDevice->CreateIndexBuffer(data.indices.data(), data.indices.size() * sizeof(uint16_t));
 		mRenderDevice->SetVertexBuffer();
 		mRenderDevice->SetIndexBuffer();
+		mRenderDevice->SetConstantBuffers();
 
 		mRenderDevice->DrawIndexedTriangles(data.indices.size());
 	}
