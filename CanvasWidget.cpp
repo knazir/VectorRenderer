@@ -1,32 +1,50 @@
 #include "CanvasWidget.h"
 
+#include "RendererFactory.h"
+
 //------------------------------------------------------------------------------
-CanvasWidget::CanvasWidget(QWidget* parent)
-	: QOpenGLWidget(parent)
+CanvasWidget::CanvasWidget(GraphicsBackend backend, QWidget* parent)
+	: QWidget(parent)
 {
+	setAttribute(Qt::WA_PaintOnScreen);
+	setAttribute(Qt::WA_NoSystemBackground);
+
+	mRenderer = RendererFactory::Create(backend);
+	if (mRenderer == nullptr)
+	{
+		qWarning() << "Failed to create renderer";
+		return;
+	}
+
+	mRenderer->Initialize(reinterpret_cast<void*>(winId()), width(), height());
 }
 
 //------------------------------------------------------------------------------
 CanvasWidget::~CanvasWidget()
 {
+	if (mRenderer != nullptr)
+	{
+		mRenderer->Shutdown();
+		delete mRenderer;
+		mRenderer = nullptr;
+	}
 }
 
 //------------------------------------------------------------------------------
-void CanvasWidget::initializeGL()
+void CanvasWidget::paintEvent(QPaintEvent* /*event*/)
 {
-	initializeOpenGLFunctions();
-
-	glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
+	if (mRenderer != nullptr)
+	{
+		mRenderer->Clear(0.5f, 0.5f, 0.5f, 1.0f);
+		mRenderer->Render();
+	}
 }
 
 //------------------------------------------------------------------------------
-void CanvasWidget::resizeGL(int32_t width, int32_t height)
+void CanvasWidget::resizeEvent(QResizeEvent* /*event*/)
 {
-	glViewport(0, 0, width, height);
-}
-
-//------------------------------------------------------------------------------
-void CanvasWidget::paintGL()
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	if (mRenderer != nullptr)
+	{
+		mRenderer->Resize(width(), height());
+	}
 }

@@ -36,6 +36,9 @@
     <ClCompile Include="CanvasWidget.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="DirectXRenderer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="MainWindow.h">
@@ -44,5 +47,16 @@
     <QtMoc Include="CanvasWidget.h">
       <Filter>Source</Filter>
     </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="IRenderer.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXRenderer.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="RendererFactory.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

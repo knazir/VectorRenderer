@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 
 #include "CanvasWidget.h"
+#include "IRenderer.h"
 
 #include <QIcon>
 
@@ -17,7 +18,7 @@ MainWindow::MainWindow(QWidget* parent)
     mUI.mainToolBar->hide();
     mUI.statusBar->showMessage("Ready");
 
-    mCanvas = new CanvasWidget(this);
+    mCanvas = new CanvasWidget(GraphicsBackend::DirectX, this);
     setCentralWidget(mCanvas);
 }
 

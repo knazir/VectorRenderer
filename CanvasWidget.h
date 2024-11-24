@@ -1,20 +1,27 @@
 #pragma once
 
-#include <QOpenGLWidget>
-#include <QOpenGLFunctions>
+#include "RendererFactory.h"
+
+#include <QWidget>
 
 //------------------------------------------------------------------------------
-class CanvasWidget : public QOpenGLWidget, protected QOpenGLFunctions
+class IRenderer;
+
+//------------------------------------------------------------------------------
+class CanvasWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	CanvasWidget(QWidget* parent = nullptr);
+	CanvasWidget(GraphicsBackend backend, QWidget* parent = nullptr);
 	~CanvasWidget();
 
 protected:
-	void initializeGL() override;
-	void resizeGL(int32_t width, int32_t height) override;
-	void paintGL() override;
+	virtual void paintEvent(QPaintEvent* event) override;
+	virtual void resizeEvent(QResizeEvent* event) override;
+	virtual QPaintEngine* paintEngine() const override { return nullptr; }
+
+private:
+	IRenderer* mRenderer = nullptr;
 };
 
