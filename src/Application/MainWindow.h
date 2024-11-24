@@ -19,6 +19,8 @@ public:
     ~MainWindow();
 
 private:
+    void CreateTestShapes();
+
     Ui::VectorRendererClass mUI;
     CanvasWidget* mCanvas = nullptr;
 };

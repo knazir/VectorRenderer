@@ -36,7 +36,13 @@
     <ClCompile Include="src\Application\CanvasWidget.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer\DirectXRenderer.cpp">
+    <ClCompile Include="src\Renderer\DirectXRenderDevice.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vector\VectorShape.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\VectorRenderer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -49,14 +55,16 @@
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Renderer\IRenderer.h">
+    <ClInclude Include="src\Renderer\IRenderDevice.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\DirectXRenderer.h">
+    <ClInclude Include="src\Renderer\DirectXRenderDevice.h">
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\RendererFactory.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="src\Vector\VectorShape.h" />
+    <ClInclude Include="src\Renderer\VectorRenderer.h" />
   </ItemGroup>
 </Project>

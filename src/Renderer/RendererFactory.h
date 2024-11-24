@@ -1,7 +1,7 @@
 #pragma once
 
-#include "IRenderer.h"
-#include "DirectXRenderer.h"
+#include "IRenderDevice.h"
+#include "DirectXRenderDevice.h"
 
 // External
 #include <QDebug>
@@ -10,13 +10,13 @@
 class RendererFactory
 {
 public:
-	static IRenderer* Create(GraphicsBackend type)
+	static IRenderDevice* Create(GraphicsBackend type)
 	{
 		switch (type)
 		{
 		case GraphicsBackend::DirectX:
 		{
-			return new DirectXRenderer();
+			return new DirectXRenderDevice();
 		}
 		default:
 		{
