@@ -16,6 +16,9 @@ struct ConstantBuffer
 };
 
 //------------------------------------------------------------------------------
+#define RELEASE(x) if ((x)) { (x)->Release(); (x) = nullptr; }
+
+//------------------------------------------------------------------------------
 DirectXRenderDevice::DirectXRenderDevice()
 {
 }
@@ -66,6 +69,20 @@ DirectXRenderDevice::~DirectXRenderDevice()
 		ASSERT(false, "Failed to create device and swap chain");
 		return false;
 	}
+
+	// Setup rasterizer state
+	D3D11_RASTERIZER_DESC rasterizerDesc = {};
+	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
+	rasterizerDesc.CullMode = D3D11_CULL_NONE;
+	//rasterizerDesc.FrontCounterClockwise = FALSE;
+	rasterizerDesc.DepthClipEnable = TRUE;
+	hr = mDevice->CreateRasterizerState(&rasterizerDesc, &mRasterizerState);
+	if (FAILED(hr))
+	{
+		ASSERT(false, "Failed to create rasterizer state");
+		return false;
+	}
+	mDeviceContext->RSSetState(mRasterizerState);
 
 	// Create render target view
 	ID3D11Texture2D* backBuffer = nullptr;
@@ -123,10 +140,11 @@ DirectXRenderDevice::~DirectXRenderDevice()
 }
 
 //------------------------------------------------------------------------------
-/*virtual*/ void DirectXRenderDevice::Clear(float r, float g, float b, float a)
+/*virtual*/ void DirectXRenderDevice::PreRender()
 {
-	float clearColor[] = { r, g, b, a };
+	float clearColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	mDeviceContext->ClearRenderTargetView(mRenderTargetView, clearColor);
+	mDeviceContext->OMSetRenderTargets(1u, &mRenderTargetView, nullptr);
 }
 
 //------------------------------------------------------------------------------
@@ -141,35 +159,15 @@ DirectXRenderDevice::~DirectXRenderDevice()
 {
 	CleanupRenderTarget();
 
-	if (mVertexShader != nullptr)
-	{
-		mVertexShader->Release();
-		mVertexShader = nullptr;
-	}
-
-	if (mPixelShader != nullptr)
-	{
-		mPixelShader->Release();
-		mPixelShader = nullptr;
-	}
-
-	if (mSwapChain != nullptr)
-	{
-		mSwapChain->Release();
-		mSwapChain = nullptr;
-	}
-
-	if (mDeviceContext != nullptr)
-	{
-		mDeviceContext->Release();
-		mDeviceContext = nullptr;
-	}
-
-	if (mDevice != nullptr)
-	{
-		mDevice->Release();
-		mDevice = nullptr;
-	}
+	RELEASE(mVertexShader);
+	RELEASE(mPixelShader);
+	RELEASE(mVertexBuffer);
+	RELEASE(mIndexBuffer);
+	RELEASE(mInputLayout);
+	RELEASE(mRasterizerState);
+	RELEASE(mSwapChain);
+	RELEASE(mDeviceContext);
+	RELEASE(mDevice);
 }
 
 /*virtual*/ bool DirectXRenderDevice::LoadShaders()
@@ -253,78 +251,20 @@ DirectXRenderDevice::~DirectXRenderDevice()
 {
 	using namespace Eigen;
 
-	//// World matrix
-	//Matrix4f world = Matrix4f::Identity();
-	//Translation3f translation(1.0f, 2.0f, 3.0f);
-	//Matrix4f translationMatrix = Affine3f(translation).matrix();
-	//Matrix4f rotation = AngleAxisf(qDegreesToRadians(45.0f), Vector3f::UnitY()).matrix();
-	//Matrix4f scaling = Scaling(1.5f, 1.5f, 1.5f);
-	//Affine3f combined = translation * rotation * scaling;
-	//world = translation * rotation * scaling;
-
-	//// View matrix
-	//Matrix4f view = Matrix4f::Identity();
-	//const Vector3f eye(0.0f, 0.0f, -5.0f);
-	//const Vector3f target(0.0f, 0.0f, 0.0f);
-	//const Vector3f up(0.0f, 1.0f, 0.0f);
-
-	//Vector3f zAxis = (eye - target).normalized();
-	//Vector3f xAxis = up.cross(zAxis).normalized();
-	//Vector3f yAxis = zAxis.cross(xAxis).normalized();
-
-	//Matrix4f viewResult = Matrix4f::Identity();
-	//viewResult.block<3, 1>(0, 0) = xAxis;
-	//viewResult.block<3, 1>(0, 1) = yAxis;
-	//viewResult.block<3, 1>(0, 2) = zAxis;
-	//viewResult.block<3, 1>(0, 3) = eye;
-
-	//view = viewResult.inverse();
-
-	//// Projection matrix
-	//Matrix4f projection = Matrix4f::Zero();
-	//const float fov = 45.0f; // TODO: Make configurable
-	//const float aspect = mWidth / mHeight;
-	//const float nearZ = 0.1f;
-	//const float farZ = 100.0f;
-
-	//const float tanHalfFov = std::tan(qDegreesToRadians(fov / 2.0f));
-	//Matrix4f projResult = Matrix4f::Zero();
-	//projResult(0, 0) = 1.0f / (aspect * tanHalfFov);
-	//projResult(1, 1) = 1.0f / tanHalfFov;
-	//projResult(2, 2) = -(farZ + nearZ) / (farZ - nearZ);
-	//projResult(2, 3) = -(2.0f * farZ * nearZ) / (farZ - nearZ);
-	//projResult(3, 2) = -1.0f;
-
-	//projection = projResult;
-
-	//// Combine matrices
-	//Matrix4f worldViewProj = projection * view * world;
-	//Matrix4f transposed = worldViewProj.transpose();
-
-	const Matrix4f identity = Matrix4f::Identity();
-	Matrix4f orthographic = Matrix4f::Identity();
-
 	const float left = -1.0f;
 	const float right = 1.0f;
-	const float bottom = -1.0f;
-	const float top = 1.0f;
-	const float nearZ = 0.1f;
-	const float farZ = 100.0f;
+	const float top = -1.0f;
+	const float bottom = 1.0f;
 
-	orthographic(0, 0) = 2.0f / (right - left);
-	orthographic(1, 1) = 2.0f / (top - bottom);
-	orthographic(2, 2) = -2.0f / (farZ - nearZ);
-	orthographic(0, 3) = -(right + left) / (right - left);
-	orthographic(1, 3) = -(top + bottom) / (top - bottom);
-	orthographic(2, 3) = -(farZ + nearZ) / (farZ - nearZ);
-
-	const Matrix4f worldViewProj = orthographic;
-	const Matrix4f transposed = orthographic.transpose();
+	Matrix4f projection = Matrix4f::Identity();
+	projection(0, 0) = 2.0f / (right - left);
+	projection(1, 1) = 2.0f / (top - bottom);
+	projection(0, 3) = -(right + left) / (right - left);
+	projection(1, 3) = -(top + bottom) / (top - bottom);
 
 	// Create constant buffer
 	ConstantBuffer cb;
-	//cb.worldViewProj = transposed;
-	cb.worldViewProj = Matrix4f::Identity();
+	cb.worldViewProj = projection.inverse();
 
 	D3D11_BUFFER_DESC bufferDesc = {};
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -473,6 +413,12 @@ ID3DBlob* DirectXRenderDevice::CompileShader(const std::wstring& filePath, const
 		}
 		ASSERT(false, "Failed to compile shader");
 		return nullptr;
+	}
+
+	if (errorBlob != nullptr)
+	{
+		errorBlob->Release();
+		errorBlob = nullptr;
 	}
 
 	return shaderBlob;

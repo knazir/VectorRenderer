@@ -40,26 +40,25 @@ MainWindow::~MainWindow()
 //------------------------------------------------------------------------------
 void MainWindow::CreateTestShapes()
 {
-    // Create a red line
-    Line* line = new Line(50.0f, 100.0f, 300.0f, 100.0f);
+    // Create a line
+    Line* line = new Line(960.0f, 540.0f, 1920.0f, 1080.0f);
     line->SetStroke(1.0f, 0.0f, 0.0f, 1.0f, 5.0f);
 
-    // Create a green rectangle
-    //Rect* rect = new Rect(100.0f, 150.0f, 200.0f, 100.0f);
-    //Rect* rect = new Rect(0.0f, 1.0f, 1.0f, 1.0f);
-    Rect* smallRect = new Rect(-0.5f, -0.5f, 1.0f, 1.0f);
-    smallRect->SetFill(1.0f, 0.0f, 0.0f, 1.0f);
+    // Create a rectangle
+    Rect* rect = new Rect(0.0f, 0.0f, 960.0f, 540.0f);
+    rect->SetFill(1.0f, 1.0f, 1.0f, 1.0f);
 
-    Rect* bigRect = new Rect(-100.0f, -150.0f, 200.0f, 100.0f);
-    bigRect->SetFill(0.0f, 1.0f, 0.0f, 1.0f);
+    // Create a quadratic Bezier curve
+    BezierCurve* quadCurve = new BezierCurve(960.0f, 540.0f, 0.0f, 1080.0f, 480.0f, 1010.0f);
+    quadCurve->SetStroke(0.0f, 1.0f, 0.0f, 1.0f, 5.0f);
 
-    // Create a blue quadratic Bezier curve
-    BezierCurve* curve = new BezierCurve(50.0f, 300.0f, 300.0f, 300.0f, 150.0f, 400.0f, 0.0f, 0.0f);
-    curve->SetStroke(0.0f, 0.0f, 1.0f, 1.0f, 2.0f);
+    // Create a cubic Bezier curve
+    CubicBezierCurve* cubicCurve = new CubicBezierCurve(960.0f, 540.0f, 1920.0f, 0.0f, 1200.0f, 205.0f, 1440.0f, 335.0f);
+    cubicCurve->SetStroke(0.0f, 0.0f, 1.0f, 1.0f, 5.0f);
 
     // Add shapes to the renderer
-    //mCanvas->AddShape(line);
-    mCanvas->AddShape(smallRect);
-    //mCanvas->AddShape(bigRect);
-    //mCanvas->AddShape(curve);
+    mCanvas->AddShape(line);
+    mCanvas->AddShape(rect);
+    mCanvas->AddShape(quadCurve);
+    mCanvas->AddShape(cubicCurve);
 }

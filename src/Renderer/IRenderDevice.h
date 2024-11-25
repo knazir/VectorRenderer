@@ -1,5 +1,8 @@
 #pragma once
 
+// Utils
+#include <Utils/Config.h>
+
 // System
 #include <stdint.h>
 #include <string>
@@ -30,6 +33,13 @@ struct Vertex
 	{
 	}
 
+	void Normalize()
+	{
+		// Translate to origin being top-left and double since NDC is -1 to 1
+		x = ((x * 2.0f) / AUTHORED_WIDTH) - 1.0f;
+		y = ((y * 2.0f) / AUTHORED_HEIGHT) - 1.0f;
+	}
+
 	// Position
 	float x = 0.0f;
 	float y = 0.0f;;
@@ -51,7 +61,7 @@ public:
 	// Lifecycle
 	virtual bool Initialize(void* windowHandle, int32_t width, int32_t height) = 0;
 	virtual void Resize(int32_t width, int32_t height) = 0;
-	virtual void Clear(float r, float g, float b, float a) = 0;
+	virtual void PreRender() = 0;
 	virtual void Render() = 0;
 	virtual void Shutdown() = 0;
 

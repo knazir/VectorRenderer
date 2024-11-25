@@ -17,7 +17,7 @@ public:
 
 	virtual bool Initialize(void* windowHandle, int32_t width, int32_t height) override;
 	virtual void Resize(int32_t width, int32_t height) override;
-	virtual void Clear(float r, float g, float b, float a) override;
+	virtual void PreRender() override;
 	virtual void Render() override;
 	virtual void Shutdown() override;
 
@@ -42,6 +42,7 @@ private:
 	ID3D11Device* mDevice = nullptr;
 	ID3D11DeviceContext* mDeviceContext = nullptr;
 	IDXGISwapChain* mSwapChain = nullptr;
+	ID3D11RasterizerState* mRasterizerState = nullptr;
 	ID3D11RenderTargetView* mRenderTargetView = nullptr;
 
 	ID3D11InputLayout* mInputLayout = nullptr;

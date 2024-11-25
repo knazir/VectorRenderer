@@ -31,18 +31,18 @@ void VectorRenderer::ClearShapes()
 //------------------------------------------------------------------------------
 void VectorRenderer::Render()
 {
-	mRenderDevice->Clear(0.5f, 0.5f, 0.5f, 1.0f);
+	mRenderDevice->PreRender();
 
 	for (const IVectorShape* shape : mShapes)
 	{
 		const TessellationData data = shape->Tessellate(mRenderDevice);
-
+	
 		mRenderDevice->CreateVertexBuffer(data.vertices.data(), data.vertices.size() * sizeof(Vertex));
 		mRenderDevice->CreateIndexBuffer(data.indices.data(), data.indices.size() * sizeof(uint16_t));
 		mRenderDevice->SetVertexBuffer();
 		mRenderDevice->SetIndexBuffer();
 		mRenderDevice->SetConstantBuffers();
-
+	
 		mRenderDevice->DrawIndexedTriangles(data.indices.size());
 	}
 
