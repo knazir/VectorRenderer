@@ -10,23 +10,6 @@
 #include <stdint.h>
 #include <cmath>
 
-namespace
-{
-//------------------------------------------------------------------------------
-float GetNormalizedX(float x)
-{
-	// Translate to origin being top-left and double since NDC is -1 to 1
-	return ((x * 2.0f) / AUTHORED_WIDTH) - 1.0f;
-}
-
-//------------------------------------------------------------------------------
-float GetNormalizedY(float y)
-{
-	// Translate to origin being top-left and double since NDC is -1 to 1
-	return ((y * 2.0f) / AUTHORED_HEIGHT) - 1.0f;
-}
-}
-
 
 //------------------------------------------------------------------------------
 /*virtual*/ void IVectorShape::SetStroke(float r, float g, float b, float a, float width)
@@ -111,7 +94,6 @@ Rect::Rect(float x, float y, float width, float height)
 	TessellationData data;
 
 	// Four corners of the rectangle
-	Vector4f normalized(GetNormalizedX(x), GetNormalizedY(y), GetNormalizedX(x + width), GetNormalizedY(y + height));
 	const Vertex vertices[] =
 	{
 		Vertex(x, y, 0.0f, fillR, fillG, fillB, fillA),						// Bottom-left

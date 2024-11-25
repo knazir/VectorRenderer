@@ -73,7 +73,7 @@ DirectXRenderDevice::~DirectXRenderDevice()
 	// Setup rasterizer state
 	D3D11_RASTERIZER_DESC rasterizerDesc = {};
 	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
-	rasterizerDesc.CullMode = D3D11_CULL_NONE;
+	rasterizerDesc.CullMode = D3D11_CULL_NONE; // TODO: This seems to break some bezier curves
 	//rasterizerDesc.FrontCounterClockwise = FALSE;
 	rasterizerDesc.DepthClipEnable = TRUE;
 	hr = mDevice->CreateRasterizerState(&rasterizerDesc, &mRasterizerState);
